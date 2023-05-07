@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
@@ -113,14 +114,17 @@ public class StoreController {
      * @return A ResponseEntity should be returned to inform the user that a product has been successfully added.
      */
 
-    @PostMapping("product/add")
-    public ResponseEntity addProductHandler(Product product){
-        try{
-            Product newProduct = sService.addProduct(product);
-            return ResponseEntity.ok().body("Product Successfully added");
-        }catch(InventoryNotFoundException e){
+    @PostMapping("products/add")
+    public ResponseEntity addProductHandler(Product product) {
+        try {
+            Optional<Product> newProduct = sService.addProduct(product);
+            if (newProduct.isPresent()) {
+                return ResponseEntity.ok().body("Product Successfully added");
+            }
+
+        } catch (InventoryNotFoundException e) {
             return ResponseEntity.badRequest().body("Product unsuccessfully added");
-        }
+        } return null;
 
     }
 
@@ -130,7 +134,7 @@ public class StoreController {
      * @return A ResponseEntity should be returned to inform the user that a product has been successfully removed.
      */
 
-    @DeleteMapping("product/delete")
+    @DeleteMapping("products/delete")
     public ResponseEntity deleteProductHandler(Product product){
         try{
             sService.deleteProduct(product);
